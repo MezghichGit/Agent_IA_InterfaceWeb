@@ -94,14 +94,20 @@ SYSTEM_PROMPT = "Tu es un assistant commercial d'Atos. Utilise les outils pour r
 
 
 def executer_agent(messages):
+
+    print("messages au debut  :", messages,"\n")
     """Fait travailler l'agent sur la conversation `messages`.
     Renvoie la réponse finale et la liste des outils utilisés."""
     outils_utilises = []
 
     for etape in range(5):  # garde-fou : 5 étapes maximum
+
         reponse = client.chat.completions.create(
             model=deployment, messages=messages, tools=DESCRIPTIONS)
         message = reponse.choices[0].message
+
+        print("message de lappel LLM  :", message)  # je veux savoir si mon LLM  commence à rédiger la réponse ou s'il demande un outil
+        print("message.tool_calls  :", message.tool_calls) # savoir c'est l'outils choisi
 
         # Cas 1 : le LLM n'a plus besoin d'outil -> il répond
         if not message.tool_calls:
